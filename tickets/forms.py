@@ -4,7 +4,7 @@ from .models import Ticket
 class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
-        fields = ['title', 'description', 'priority', 'category', 'status', 'created_by', 'created_at']
+        fields = ['title', 'description', 'priority', 'category', 'status',]
         # Podemos añadir clases de CSS (como Bootstrap) para que se vea bien
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter ticket title'}),
@@ -14,5 +14,4 @@ class TicketForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-select'}),
             # WHEN WE HAVE A USER MODEL, UNCOMMENT THIS
             #'created_by': forms.Select(attrs={'class': 'form-select'}),
-            'created_at': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
         }
