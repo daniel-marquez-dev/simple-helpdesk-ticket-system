@@ -1,0 +1,10 @@
+# Caché de Python
+**/__pycache__/
+*.pyc
+
+# Base de datos local de Django
+db.sqlite3
+
+# Entorno virtual (por si acaso no lo tenías guardado)
+venv/
+.venv/
