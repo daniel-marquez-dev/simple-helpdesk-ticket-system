@@ -20,11 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-<<<<<<< HEAD
 SECRET_KEY = 'django-insecure-5l_8bevvrsz21*t4q8$)yk9ty3=^u)cnf7$+be+_*27%@2ur!7'
-=======
-SECRET_KEY = 'django-insecure-!760htp#x3gg5f_&j2!x7=o2b7lg44k8443soxr)ee&if2b^ia'
->>>>>>> d02e6e7c9b41c850802836a15e87c55a6eb6f666
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -35,16 +31,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-<<<<<<< HEAD
     'accounts',
-=======
->>>>>>> d02e6e7c9b41c850802836a15e87c55a6eb6f666
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tickets',
 ]
 
 MIDDLEWARE = [
@@ -123,9 +117,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-<<<<<<< HEAD
 
 LOGIN_REDIRECT_URL = '/dashboard/'  # O la URL que definan para el inicio
 LOGOUT_REDIRECT_URL = '/login/'
-=======
->>>>>>> d02e6e7c9b41c850802836a15e87c55a6eb6f666
