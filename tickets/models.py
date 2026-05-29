@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings  # 1. Importas settings
 
 class Ticket(models.Model):
    STATUS_CHOICES = [
@@ -31,8 +32,6 @@ class Ticket(models.Model):
    #created_by = models.ForeignKey(User, on_delete=models.CASCADE)
    created_at = models.DateTimeField(auto_now_add=True)
 
-from django.db import models
-from django.conf import settings  # 1. Importas settings
 
 class Comment(models.Model):
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE, related_name='comments')
