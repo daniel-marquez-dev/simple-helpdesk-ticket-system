@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from .forms import TicketForm
 
 def create_ticket(request):
@@ -6,7 +6,7 @@ def create_ticket(request):
         form = TicketForm(request.POST)
         if form.is_valid():
             form.save() # Guarda el ticket en la base de datos automáticamente
-            return redirect('tickets/successful.html') # Redirige a una página de éxito
+            return render(request, 'tickets/successful.html')
     else:
         form = TicketForm() # Formulario vacío para la petición GET
         
