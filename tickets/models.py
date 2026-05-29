@@ -31,3 +31,12 @@ class Ticket(models.Model):
    #created_by = models.ForeignKey(User, on_delete=models.CASCADE)
    created_at = models.DateTimeField(auto_now_add=True)
 
+from django.db import models
+from django.conf import settings  # 1. Importas settings
+
+class Comment(models.Model):
+    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE, related_name='comments')
+    # 2. Usas settings.AUTH_USER_MODEL en lugar de User
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
