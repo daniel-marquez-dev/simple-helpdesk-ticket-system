@@ -8,3 +8,7 @@ db.sqlite3
 # Entorno virtual (por si acaso no lo tenías guardado)
 venv/
 .venv/
+env/
+# Ignorar configuraciones de editores de código
+.vscode/
+.idea/
