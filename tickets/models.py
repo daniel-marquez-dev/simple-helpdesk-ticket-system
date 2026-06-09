@@ -1,5 +1,8 @@
 from django.db import models
 from django.conf import settings  # 1. Importas settings
+from django.contrib.auth.models import User
+
+
 
 class Ticket(models.Model):
    STATUS_CHOICES = [

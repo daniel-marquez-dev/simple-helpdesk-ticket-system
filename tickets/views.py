@@ -48,9 +48,9 @@ def create_ticket(request):
     if request.method == 'POST':
         form = TicketForm(request.POST)
         if form.is_valid():
-            # NOTA DE SEGURIDAD: Aquí tu compañero debería asignar el usuario, 
-            # pero no tocamos su lógica para no romper su entrega.
-            form.save() 
+            ticket = form.save(commit=False)
+            ticket.created_by = request.user
+            ticket.save()
             return render(request, 'tickets/successful.html')
     else:
         form = TicketForm()
