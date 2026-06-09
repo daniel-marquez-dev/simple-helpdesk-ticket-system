@@ -118,5 +118,5 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-LOGIN_REDIRECT_URL = '/dashboard/'  # O la URL que definan para el inicio
+LOGIN_REDIRECT_URL = '/tickets/create_ticket'  # O la URL que definan para el inicio
 LOGOUT_REDIRECT_URL = '/login/'

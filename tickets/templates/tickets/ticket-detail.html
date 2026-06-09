@@ -17,7 +17,7 @@
         </div>
         <div class="card-body">
             <div class="row mb-4 text-muted border-bottom pb-3">
-                <div class="col-md-4"><strong>Created by:</strong> {{ ticket.user.username }}</div>
+                <div class="col-md-4"><strong>Created by:</strong> {{ ticket.created_by.username }}</div>
                 <div class="col-md-4"><strong>Category:</strong> {{ ticket.get_category_display }}</div>
                 <div class="col-md-4"><strong>Priority:</strong> <span class="badge bg-secondary">{{ ticket.get_priority_display }}</span></div>
             </div>

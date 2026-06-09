@@ -27,7 +27,7 @@
             {% for ticket in tickets %}
             <tr>
                 <td><strong>{{ ticket.title }}</strong></td>
-                {% if user.is_staff %}<td>{{ ticket.user.username }}</td>{% endif %}
+                {% if user.is_staff %}<td>{{ ticket.created_by.username }}</td>{% endif %}
                 <td>{{ ticket.get_category_display }}</td>
                 <td><span class="badge bg-secondary">{{ ticket.get_priority_display }}</span></td>
                 <td><span class="badge bg-info text-dark">{{ ticket.get_status_display }}</span></td>
