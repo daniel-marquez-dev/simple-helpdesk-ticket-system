@@ -35,13 +35,19 @@ class Ticket(models.Model):
    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
    created_at = models.DateTimeField(auto_now_add=True)
 
+# ... Aquí ya debería estar el modelo Ticket del Intern 1 ...
 
 class Comment(models.Model):
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE, related_name='comments')
-    # 2. Usas settings.AUTH_USER_MODEL en lugar de User
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['created_at']  # Los comentarios antiguos aparecen primero
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def __str__(self):
-        return f"Comment by {self.author.username} on {self.ticket.title}"
+        return f"Comentario de {self.author.username} en {self.ticket.title}"

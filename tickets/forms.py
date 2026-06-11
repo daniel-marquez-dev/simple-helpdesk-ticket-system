@@ -19,11 +19,14 @@ class TicketForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['message'] # Solo necesitamos el campo de texto, el autor y el ticket se ponen en la vista
+        fields = ['message']
         widgets = {
             'message': forms.Textarea(attrs={
                 'class': 'form-control', 
                 'rows': 3, 
-                'placeholder': 'Write a comment or update here...'
+                'placeholder': 'Escribe un comentario o actualización...'
             }),
+        }
+        labels = {
+            'message': '',
         }

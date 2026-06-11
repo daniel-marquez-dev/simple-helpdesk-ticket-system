@@ -1,29 +1,28 @@
-from django.shortcuts import render, get_object_or_404, redirect # Añadimos get_object_or_404 y redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required # Añadimos este decorador para tu vista
+from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
-from django.contrib import messages # Para mostrar mensajes de éxito de Bootstrap
-from django.http import Http404
+from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 
-from .models import Ticket, Comment # 1. Importamos tu modelo Comment
-from .forms import TicketForm, CommentForm # 2. Importamos tu CommentForm
+from .models import Ticket, Comment 
+from .forms import TicketForm, CommentForm 
 
-# --- VISTAS DE TU COMPAÑERO (No se tocan, están perfectas) ---
+# --- VISTAS DE TICKET LIST & CREATION (Intern 1) ---
 
-class TicketListView(LoginRequiredMixin, ListView):
+class ticketListView(LoginRequiredMixin, ListView):
     model = Ticket
     template_name = 'tickets/ticket_list.html'
     context_object_name = 'tickets'
 
     def get_queryset(self):
-        user = self.request.user
-        if user.is_staff or user.is_superuser:
+        if self.request.user.is_staff or self.request.user.is_superuser:
             return Ticket.objects.all().order_by('-created_at')
-        return Ticket.objects.filter(created_by=user).order_by('-created_at')
+        return Ticket.objects.filter(created_by=self.request.user).order_by('-created_at')
+
 
 @login_required
 def ticket_list(request):
-    # Requirement: show all tickets for admin users, only own tickets for normal users
     if request.user.is_staff or request.user.is_superuser:
         tickets = Ticket.objects.all().order_by('-created_at')
     else:
@@ -31,17 +30,6 @@ def ticket_list(request):
         
     return render(request, 'tickets/ticket_list.html', {'tickets': tickets})
 
-@login_required
-def ticket_detail(request, pk):
-    # Requirement: Fetch the ticket or return 404
-    ticket = get_object_or_404(Ticket, pk=pk)
-    
-    # Security check: If the user is NOT an admin AND doesn't own the ticket, deny access
-    if not (request.user.is_staff or request.user.is_superuser) and ticket.created_by != request.user:
-        from django.core.exceptions import PermissionDenied
-        raise PermissionDenied
-        
-    return render(request, 'tickets/ticket-detail.html', {'ticket': ticket})
 
 @login_required
 def create_ticket(request):
@@ -57,40 +45,45 @@ def create_ticket(request):
         
     return render(request, 'tickets/create_ticket.html', {'form': form})
 
+
 def successful(request):
     return render(request, 'tickets/successful.html')
 
 
-# --- TU NUEVA VISTA DEL DÍA 6: DETALLE Y COMENTARIOS ---
+# --- DÍA 6: VISTA DE DETALLE UNIFICADA CON COMENTARIOS (Intern 2) ---
 
 @login_required
-def ticket_detail_view(request, pk):
-    # Buscamos el ticket por su ID (pk). Si no existe, lanza un error 404.
+def ticket_detail(request, pk):
+    # 1. Usamos 'pk' para mantener la consistencia con las URLs de tu compañero
     ticket = get_object_or_404(Ticket, pk=pk)
     
-    # CONTROL DE SEGURIDAD: Si el usuario NO es staff/admin y el ticket NO es suyo, bloqueamos el acceso.
+    # 2. Control de seguridad estricto que dejó tu compañero
     if not (request.user.is_staff or request.user.is_superuser) and ticket.created_by != request.user:
-        raise Http404("You do not have permission to view this ticket.")
+        raise PermissionDenied
         
-    # Obtenemos todos los comentarios de este ticket ordenados del más viejo al más nuevo
-    comments = ticket.comments.all().order_by('created_at')
-    
+    # 3. Tu lógica del Día 6: Obtener comentarios existentes
+    comments = ticket.comments.all()
+
+    # 4. Tu lógica del Día 6: Procesar el formulario de comentarios
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
-            comment.ticket = ticket       # Enlazamos el comentario al ticket actual
-            comment.author = request.user   # El autor es el usuario logueado
+            comment.ticket = ticket
+            comment.author = request.user
             comment.save()
-            
-            messages.success(request, "Comment added successfully!")
-            return redirect('ticket_detail', pk=ticket.pk) # Recarga la página para ver el comentario
+            messages.success(request, "¡Comentario añadido correctamente!")
+            # Redirigimos usando 'pk' para evitar errores de reversión de URL
+            return redirect('ticket_detail', pk=ticket.pk)
     else:
-        form = CommentForm() # Formulario vacío para la petición GET
-        
+        form = CommentForm()
+
     context = {
         'ticket': ticket,
         'comments': comments,
         'comment_form': form,
     }
-    return render(request, 'tickets/ticket_detail.html', context)
+    
+    # NOTA: Asegúrate de si tu archivo HTML se llama 'ticket-detail.html' o 'ticket_detail.html'
+    # He dejado 'ticket-detail.html' porque es el que tu compañero configuró originalmente.
+    return render(request, 'tickets/ticket-detail.html', context)
