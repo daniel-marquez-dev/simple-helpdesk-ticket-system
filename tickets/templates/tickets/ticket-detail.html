@@ -1,15 +1,20 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ticket #{{ ticket.id }}</title>
+    <title>{% translate "Ticket" %} #{{ ticket.id }}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body class="container mt-5" style="max-width: 800px;">
     
     {% if messages %}
         {% for message in messages %}
+ feature/ticket-form
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+ main
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -17,7 +22,7 @@
     {% endif %}
 
     <div class="mb-3">
-        <a href="{% url 'ticket_list' %}" class="btn btn-sm btn-secondary">&larr; Back to List</a>
+        <a href="{% url 'ticket_list' %}" class="btn btn-sm btn-secondary">&larr; {% translate "Back to List" %}</a>
     </div>
 
     <div class="card shadow mb-4">
@@ -27,20 +32,69 @@
         </div>
         <div class="card-body">
             <div class="row mb-4 text-muted border-bottom pb-3">
-                <div class="col-md-4"><strong>Created by:</strong> {{ ticket.created_by.username }}</div>
-                <div class="col-md-4"><strong>Category:</strong> {{ ticket.get_category_display }}</div>
-                <div class="col-md-4"><strong>Priority:</strong> <span class="badge bg-secondary">{{ ticket.get_priority_display }}</span></div>
+                <div class="col-md-4"><strong>{% translate "Created by:" %}</strong> {{ ticket.created_by.username }}</div>
+                <div class="col-md-4"><strong>{% translate "Category:" %}</strong> {{ ticket.get_category_display }}</div>
+                <div class="col-md-4"><strong>{% translate "Priority:" %}</strong> <span class="badge bg-secondary">{{ ticket.get_priority_display }}</span></div>
             </div>
 
-            <h5>Description</h5>
+            <h5>{% translate "Description" %}</h5>
             <p class="card-text p-3 bg-white border rounded" style="white-space: pre-wrap;">{{ ticket.description }}</p>
         </div>
         <div class="card-footer text-muted small d-flex justify-content-between">
-            <span><strong>Created on:</strong> {{ ticket.created_at|date:"Y-m-d H:i" }}</span>
+            <span><strong>{% translate "Created on:" %}</strong> {{ ticket.created_at|date:"Y-m-d H:i" }}</span>
             <span><strong>Last updated:</strong> {{ ticket.updated_at|date:"Y-m-d H:i" }}</span>
         </div>
     </div>
 
+ feature/ticket-form
+    {% if user.is_staff or user.is_superuser %}
+    <div class="card border-warning mb-4 shadow-sm">
+        <div class="card-header bg-warning text-dark fw-bold">
+            ⚙️ {% translate "Support Panel: Update Status" %}
+        </div>
+        <div class="card-body">
+            <form method="POST" class="d-flex gap-2">
+                {% csrf_token %}
+                <div class="flex-grow-1">
+                    {{ status_form.status }}
+                </div>
+                <button type="submit" name="update_status" class="btn btn-warning fw-bold">{% translate "Update" %}</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <h4>💬 {% translate "Comments" %}</h4>
+        
+        <div class="mb-3">
+            {% if comments %}
+                {% for comment in comments %}
+                    <div class="card mb-2 bg-light border-0 shadow-sm">
+                        <div class="card-body py-2">
+                            <div class="d-flex justify-content-between text-muted small mb-1">
+                                <strong>{{ comment.author.username }}</strong>
+                                <span>{{ comment.created_at|date:"Y-m-d H:i" }}</span>
+                            </div>
+                            <p class="card-text mb-0">{{ comment.message }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted italic small">{% translate "No comments on this ticket yet." %}</p>
+            {% endif %}
+        </div>
+
+        <div class="card p-3 shadow-sm border-0 bg-light">
+            <h5 class="mb-2 small fw-bold">{% translate "Add a comment" %}</h5>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-2">
+                    {{ comment_form.message }}
+                </div>
+                <button type="submit" name="add_comment" class="btn btn-sm btn-primary">{% translate "Submit Comment" %}</button>
+            </form>
+=======
     <div class="card shadow mb-5">
         <div class="card-header bg-dark text-white">
             <h5 class="mb-0">Conversation History</h5>
@@ -87,6 +141,7 @@
                 </div>
             </form>
 
+ main
         </div>
     </div>
 
