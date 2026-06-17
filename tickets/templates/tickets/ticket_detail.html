@@ -41,6 +41,26 @@
         </div>
     </div>
 
+    {% if user.is_superuser or user.is_staff %}
+    <div class="card shadow mb-4 border-warning bg-light">
+        <div class="card-header bg-warning text-dark fw-bold">
+            🛠️ Admin Control Panel
+        </div>
+        <div class="card-body">
+            <form method="POST" class="row g-3 align-items-end">
+                {% csrf_token %}
+                <div class="col-md-8">
+                    <label class="form-label text-muted small fw-bold">Update Development Status</label>
+                    {{ status_form.status }}
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-warning w-100 fw-bold text-dark">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="card shadow mb-5">
         <div class="card-header bg-dark text-white">
             <h5 class="mb-0">Conversation History</h5>
