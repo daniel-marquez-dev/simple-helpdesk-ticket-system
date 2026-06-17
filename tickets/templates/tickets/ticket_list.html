@@ -11,9 +11,13 @@
         <h2>
             {% if user.is_staff %}All Support Tickets (Admin View){% else %}My Support Tickets{% endif %}
         </h2>
-        {% if not user.is_staff %}
-            <a href="{% url 'create_ticket' %}" class="btn btn-primary">+ Create New Ticket</a>
-        {% endif %}
+        <div class="d-flex gap-2">
+            <a href="{% url 'ticket_dashboard' %}" class="btn btn-outline-dark">📊 View Dashboard</a>
+            
+            {% if not user.is_staff %}
+                <a href="{% url 'create_ticket' %}" class="btn btn-primary">+ Create New Ticket</a>
+            {% endif %}
+        </div>
     </div>
 
     <div class="card p-3 mb-4 bg-light shadow-sm">

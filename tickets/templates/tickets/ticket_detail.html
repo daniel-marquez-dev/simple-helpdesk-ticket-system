@@ -46,55 +46,26 @@
         </div>
     </div>
 
- feature/ticket-form
-    {% if user.is_staff or user.is_superuser %}
-    <div class="card border-warning mb-4 shadow-sm">
+    {% if user.is_superuser or user.is_staff %}
+    <div class="card shadow mb-4 border-warning bg-light">
         <div class="card-header bg-warning text-dark fw-bold">
-            ⚙️ {% translate "Support Panel: Update Status" %}
+            🛠️ Admin Control Panel
         </div>
         <div class="card-body">
-            <form method="POST" class="d-flex gap-2">
+            <form method="POST" class="row g-3 align-items-end">
                 {% csrf_token %}
-                <div class="flex-grow-1">
+                <div class="col-md-8">
+                    <label class="form-label text-muted small fw-bold">Update Development Status</label>
                     {{ status_form.status }}
                 </div>
-                <button type="submit" name="update_status" class="btn btn-warning fw-bold">{% translate "Update" %}</button>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-warning w-100 fw-bold text-dark">Update Status</button>
+                </div>
             </form>
         </div>
     </div>
     {% endif %}
 
-    <div class="mt-4">
-        <h4>💬 {% translate "Comments" %}</h4>
-        
-        <div class="mb-3">
-            {% if comments %}
-                {% for comment in comments %}
-                    <div class="card mb-2 bg-light border-0 shadow-sm">
-                        <div class="card-body py-2">
-                            <div class="d-flex justify-content-between text-muted small mb-1">
-                                <strong>{{ comment.author.username }}</strong>
-                                <span>{{ comment.created_at|date:"Y-m-d H:i" }}</span>
-                            </div>
-                            <p class="card-text mb-0">{{ comment.message }}</p>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p class="text-muted italic small">{% translate "No comments on this ticket yet." %}</p>
-            {% endif %}
-        </div>
-
-        <div class="card p-3 shadow-sm border-0 bg-light">
-            <h5 class="mb-2 small fw-bold">{% translate "Add a comment" %}</h5>
-            <form method="POST">
-                {% csrf_token %}
-                <div class="mb-2">
-                    {{ comment_form.message }}
-                </div>
-                <button type="submit" name="add_comment" class="btn btn-sm btn-primary">{% translate "Submit Comment" %}</button>
-            </form>
-=======
     <div class="card shadow mb-5">
         <div class="card-header bg-dark text-white">
             <h5 class="mb-0">Conversation History</h5>
