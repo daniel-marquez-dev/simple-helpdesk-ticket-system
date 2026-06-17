@@ -35,6 +35,13 @@ class Ticket(models.Model):
    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
    created_at = models.DateTimeField(auto_now_add=True)
 
+ feature/ticket-form
+class Comment(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='comments') # 👈 ESTO ES CLAVE
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
 # ... Aquí ya debería estar el modelo Ticket del Intern 1 ...
 
 class Comment(models.Model):
@@ -51,3 +58,4 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comentario de {self.author.username} en {self.ticket.title}"
+ main
