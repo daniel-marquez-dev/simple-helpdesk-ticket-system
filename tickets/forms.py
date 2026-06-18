@@ -1,9 +1,7 @@
 from django import forms
-feature/ticket-form
 from .models import Ticket, Comment 
-=======
 from .models import Ticket, Comment # 1. Importamos también tu modelo Comment
-main
+
 
 # --- FORMULARIO DE TU COMPAÑERO (No se toca) ---
 class TicketForm(forms.ModelForm):
@@ -15,7 +13,7 @@ class TicketForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Enter ticket description'}),
             'priority': forms.Select(attrs={'class': 'form-select'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
-feature/ticket-form
+
             'created_by': forms.Select(attrs={'class': 'form-select'}),
         }
 
@@ -29,14 +27,13 @@ class TicketStatusForm(forms.ModelForm):
         labels = {
             'status': 'Actualizar Estado',
         }
-
-=======
+        {
             'status': forms.Select(attrs={'class': 'form-select'}),
         }
 
 
 # --- TU FORMULARIO DEL DÍA 6 (Añade esto aquí abajo) ---
-main
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -45,11 +42,11 @@ class CommentForm(forms.ModelForm):
             'message': forms.Textarea(attrs={
                 'class': 'form-control', 
                 'rows': 3, 
-feature/ticket-form
-                'placeholder': 'Write a comment...'
-=======
-                'placeholder': 'Escribe un comentario o actualización...'
-main
+
+                'placeholder': 'Write a comment...',
+
+                'placeholder': 'Escribe un comentario o actualización...',
+
             }),
         }
         labels = {

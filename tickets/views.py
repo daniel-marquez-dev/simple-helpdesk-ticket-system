@@ -1,16 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
-feature/ticket-form
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
 from tickets.models import Ticket
 from .forms import TicketForm, TicketStatusForm, CommentForm 
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
-
 from .models import Ticket, Comment 
 from .forms import TicketForm, CommentForm 
 
@@ -26,7 +23,6 @@ class ticketListView(LoginRequiredMixin, ListView):
             return Ticket.objects.all().order_by('-created_at')
         return Ticket.objects.filter(created_by=self.request.user).order_by('-created_at')
 
-main
 
 @login_required
 def ticket_list(request):
@@ -37,7 +33,6 @@ def ticket_list(request):
         
     return render(request, 'tickets/ticket_list.html', {'tickets': tickets})
 
-feature/ticket-form
 @login_required
 def ticket_detail(request, pk):
     ticket = get_object_or_404(Ticket, pk=pk)
@@ -81,7 +76,6 @@ def ticket_detail(request, pk):
     }
     return render(request, 'tickets/ticket-detail.html', context)
 
-main
 
 @login_required
 def create_ticket(request):
