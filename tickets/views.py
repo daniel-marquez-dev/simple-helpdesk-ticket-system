@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 from django.core.exceptions import PermissionDenied
 from django.db.models import Count
+
 from .models import Ticket, Comment 
 from .forms import TicketForm, CommentForm, TicketStatusForm
 
