@@ -1,71 +1,90 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages 
-from tickets.models import Ticket
-from .forms import TicketForm, TicketStatusForm, CommentForm 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
-from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from django.db.models import Count
 from .models import Ticket, Comment 
-from .forms import TicketForm, CommentForm 
+from .forms import TicketForm, CommentForm, TicketStatusForm
 
-# --- VISTAS DE TICKET LIST & CREATION (Intern 1) ---
-
+# =========================================================================
+# 1. LISTADO DE TICKETS (DÍA 8: CON FILTROS ENCADENADOS)
+# =========================================================================
 class ticketListView(LoginRequiredMixin, ListView):
     model = Ticket
     template_name = 'tickets/ticket_list.html'
     context_object_name = 'tickets'
 
     def get_queryset(self):
+        # Filtro base de seguridad: Staff/Superuser ve todo, usuario común solo lo suyo
         if self.request.user.is_staff or self.request.user.is_superuser:
-            return Ticket.objects.all().order_by('-created_at')
-        return Ticket.objects.filter(created_by=self.request.user).order_by('-created_at')
+            queryset = Ticket.objects.all()
+        else:
+            queryset = Ticket.objects.filter(created_by=self.request.user)
+
+        # Captura de los parámetros seleccionados en la barra de filtros HTML
+        status_filter = self.request.GET.get('status')
+        priority_filter = self.request.GET.get('priority')
+        category_filter = self.request.GET.get('category')
+        user_filter = self.request.GET.get('user')
+
+        # Aplicar filtros encadenados dinámicamente
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+        if priority_filter:
+            queryset = queryset.filter(priority=priority_filter)
+        if category_filter:
+            queryset = queryset.filter(category=category_filter)
+        if user_filter and (self.request.user.is_staff or self.request.user.is_superuser):
+            queryset = queryset.filter(created_by__username__icontains=user_filter)
+
+        # Ordenar por fecha de creación (más recientes primero)
+        return queryset.order_by('-created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_choices'] = Ticket.STATUS_CHOICES
+        context['priority_choices'] = Ticket.PRIORITY_CHOICES
+        context['category_choices'] = Ticket.CATEGORY_CHOICES
+        return context
 
 
-@login_required
-def ticket_list(request):
-    if request.user.is_staff or request.user.is_superuser:
-        tickets = Ticket.objects.all().order_by('-created_at')
-    else:
-        tickets = Ticket.objects.filter(created_by=request.user).order_by('-created_at')
-        
-    return render(request, 'tickets/ticket_list.html', {'tickets': tickets})
-
+# =========================================================================
+# 2. DETALLE DEL TICKET (DÍA 7 Y 9: COMENTARIOS Y CAMBIO DE ESTADO SMART)
+# =========================================================================
 @login_required
 def ticket_detail(request, pk):
     ticket = get_object_or_404(Ticket, pk=pk)
     
-    # Verificación de seguridad
-    if not (request.user.is_staff or request.user.is_superuser) and ticket.created_by != request.user:
-        from django.core.exceptions import PermissionDenied
+    # Control de seguridad: solo staff, superusuarios o el creador pueden ver el ticket
+    if not (request.user.is_superuser or request.user.is_staff) and ticket.created_by != request.user:
         raise PermissionDenied
         
     comments = ticket.comments.all()
 
-    # Inicializamos ambos formularios para el contexto de la página
+    # Inicializamos los formularios con los datos actuales
     comment_form = CommentForm()
     status_form = TicketStatusForm(instance=ticket)
 
     if request.method == 'POST':
-        # ACCIÓN 1: El administrador cambia el estado del ticket
-        if 'update_status' in request.POST and (request.user.is_staff or request.user.is_superuser):
+        # ACCIÓN 1: El administrador cambia el estado del ticket (Detecta el campo 'status')
+        if (request.user.is_superuser or request.user.is_staff) and 'status' in request.POST:
             status_form = TicketStatusForm(request.POST, instance=ticket)
             if status_form.is_valid():
                 status_form.save()
-                messages.success(request, "¡Estado del ticket actualizado con éxito!")
+                messages.success(request, "Ticket status updated successfully!")
                 return redirect('ticket_detail', pk=ticket.pk)
         
-        # ACCIÓN 2: Cualquiera de los dos añade un comentario
-        elif 'add_comment' in request.POST:
+        # ACCIÓN 2: El usuario o admin envía un comentario (Detecta el campo 'message')
+        elif 'message' in request.POST:
             comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
                 comment = comment_form.save(commit=False)
                 comment.ticket = ticket
                 comment.author = request.user
                 comment.save()
-                messages.success(request, "¡Comentario añadido!")
+                messages.success(request, "Comment added successfully!")
                 return redirect('ticket_detail', pk=ticket.pk)
 
     context = {
@@ -74,62 +93,70 @@ def ticket_detail(request, pk):
         'comment_form': comment_form,
         'status_form': status_form,
     }
-    return render(request, 'tickets/ticket-detail.html', context)
+    
+    return render(request, 'tickets/ticket_detail.html', context)
 
 
+# =========================================================================
+# 3. CREACIÓN DE TICKETS (DÍA 6)
+# =========================================================================
 @login_required
 def create_ticket(request):
     if request.method == 'POST':
-        form = TicketForm(request.POST)
-        if form.is_valid():
-            ticket = form.save(commit=False)
-            ticket.created_by = request.user
-            ticket.save()
-            return render(request, 'tickets/successful.html')
+        # Extraemos los campos directamente usando el atributo 'name' del HTML
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        category = request.POST.get('category')
+        priority = request.POST.get('priority')
+
+        # Creamos el ticket saltándonos campos fantasmas u ocultos que bloqueen la validación
+        if title and description:
+            ticket = Ticket.objects.create(
+                title=title,
+                description=description,
+                category=category,
+                priority=priority,
+                created_by=request.user
+            )
+            messages.success(request, "¡Ticket creado correctamente!")
+            return redirect('successful')
+        else:
+            messages.error(request, "Por favor, rellena todos los campos obligatorios.")
+            
     else:
         form = TicketForm()
         
     return render(request, 'tickets/create_ticket.html', {'form': form})
 
+# =========================================================================
+# 4. VISTA DEL DASHBOARD / PANEL DE CONTROL (DÍA 9)
+# =========================================================================
+@login_required
+def ticket_dashboard(request):
+    # Filtro base: Staff ve métricas globales; usuario común solo ve las de sus propios tickets
+    if request.user.is_staff or request.user.is_superuser:
+        base_queryset = Ticket.objects.all()
+    else:
+        base_queryset = Ticket.objects.filter(created_by=request.user)
 
+    # Agrupamos y contamos por estado en una sola consulta eficiente
+    status_counts = base_queryset.values('status').annotate(total=Count('id'))
+    counts_dict = {item['status']: item['total'] for item in status_counts}
+
+    # Pasamos las métricas al contexto asegurando un valor de 0 si no hay registros todavía
+    context = {
+        'total_tickets': base_queryset.count(),
+        'tickets_new': counts_dict.get('new', 0),
+        'tickets_in_progress': counts_dict.get('in_progress', 0),
+        'tickets_resolved': counts_dict.get('resolved', 0),
+    }
+
+    return render(request, 'tickets/dashboard.html', context)
+
+
+# =========================================================================
+# 5. PÁGINA DE ÉXITO
+# =========================================================================
+@login_required
 def successful(request):
     return render(request, 'tickets/successful.html')
-
-
-# --- DÍA 6: VISTA DE DETALLE UNIFICADA CON COMENTARIOS (Intern 2) ---
-
-@login_required
-def ticket_detail(request, pk):
-    # 1. Usamos 'pk' para mantener la consistencia con las URLs de tu compañero
-    ticket = get_object_or_404(Ticket, pk=pk)
-    
-    # 2. Control de seguridad estricto que dejó tu compañero
-    if not (request.user.is_staff or request.user.is_superuser) and ticket.created_by != request.user:
-        raise PermissionDenied
-        
-    # 3. Tu lógica del Día 6: Obtener comentarios existentes
-    comments = ticket.comments.all()
-
-    # 4. Tu lógica del Día 6: Procesar el formulario de comentarios
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.ticket = ticket
-            comment.author = request.user
-            comment.save()
-            messages.success(request, "¡Comentario añadido correctamente!")
-            # Redirigimos usando 'pk' para evitar errores de reversión de URL
-            return redirect('ticket_detail', pk=ticket.pk)
-    else:
-        form = CommentForm()
-
-    context = {
-        'ticket': ticket,
-        'comments': comments,
-        'comment_form': form,
-    }
-    
-    # NOTA: Asegúrate de si tu archivo HTML se llama 'ticket-detail.html' o 'ticket_detail.html'
-    # He dejado 'ticket-detail.html' porque es el que tu compañero configuró originalmente.
-    return render(request, 'tickets/ticket-detail.html', context)
