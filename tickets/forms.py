@@ -1,11 +1,5 @@
 from django import forms
-<<<<<<< HEAD
-from .models import Ticket, Comment 
-from .models import Ticket, Comment # 1. Importamos también tu modelo Comment
-
-=======
 from .models import Ticket, Comment
->>>>>>> 76fc53ac6dc48b2ebf034a05fffca77f52460ceb
 
 # 1. Formulario de Creación de Tickets (Día 5)
 class TicketForm(forms.ModelForm):
@@ -17,10 +11,6 @@ class TicketForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Enter ticket description'}),
             'priority': forms.Select(attrs={'class': 'form-select'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
-<<<<<<< HEAD
-
-=======
->>>>>>> 76fc53ac6dc48b2ebf034a05fffca77f52460ceb
             'created_by': forms.Select(attrs={'class': 'form-select'}),
         }
 
@@ -35,18 +25,8 @@ class TicketStatusForm(forms.ModelForm):
         labels = {
             'status': 'Actualizar Estado',
         }
-<<<<<<< HEAD
-        {
-            'status': forms.Select(attrs={'class': 'form-select'}),
-        }
-
-
-# --- TU FORMULARIO DEL DÍA 6 (Añade esto aquí abajo) ---
-
-=======
 
 # 3. Formulario de Comentarios (Día 6)
->>>>>>> 76fc53ac6dc48b2ebf034a05fffca77f52460ceb
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -55,15 +35,7 @@ class CommentForm(forms.ModelForm):
             'message': forms.Textarea(attrs={
                 'class': 'form-control', 
                 'rows': 3, 
-<<<<<<< HEAD
-
-                'placeholder': 'Write a comment...',
-
-                'placeholder': 'Escribe un comentario o actualización...',
-
-=======
                 'placeholder': 'Write a comment...'
->>>>>>> 76fc53ac6dc48b2ebf034a05fffca77f52460ceb
             }),
         }
         labels = {
