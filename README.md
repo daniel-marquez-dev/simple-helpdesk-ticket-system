@@ -31,8 +31,9 @@ Follow these steps to set up the local development environment:
 ```bash
 git clone [https://github.com/daniel-marquez-dev/simple-helpdesk-ticket-system.git](https://github.com/daniel-marquez-dev/simple-helpdesk-ticket-system.git)
 cd simple-helpdesk-ticket-system
+```
 
-2. Configure Environment Variables
+### 2. Configure Environment Variables
 Create a .env file in the root directory following the .env.example structure, and define your credentials:
 ```
 PORT=3000
@@ -43,21 +44,22 @@ DB_NAME=helpdesk_db
 JWT_SECRET=your_secret_key
 ```
 
-3. Install Dependencies
+### 3. Install Dependencies
 Run the following command to install all the required packages:
 
 ```Bash
 npm install```
 
-4. Run Migrations / Initialize Database
+### 4. Run Migrations / Initialize Database
 Set up your database tables by running the migration scripts:
 
 ```Bash
 npm run migrate
 ```
-5. Start the Application
+### 5. Start the Application
 To launch the server in development mode:
 ```npm run dev```
+
 Open your browser and navigate to http://localhost:8000/register
 
 💡 System Usage
