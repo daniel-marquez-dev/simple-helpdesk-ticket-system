@@ -64,14 +64,14 @@ To launch the server in development mode:
 
 Open your browser and navigate to http://localhost:8000/register
 
-###💡 System Usage
+### 💡 System Usage
 Sign Up & Log In: Create an account as a regular user to report issues or log in with agent credentials to manage them.
 
 Create a Ticket: Click on "New Ticket", fill in the title, description, category, and priority level.
 
 Assignment & Resolution: Agents can pick up the ticket, change its status to "In Progress", add comments/technical notes, and finally mark it as "Resolved".
 
-###🛣️ Roadmap / Future Enhancements
+### 🛣️ Roadmap / Future Enhancements
 Implement email notifications upon ticket status changes.
 
 Support attachments (images or logs) inside tickets.
@@ -80,7 +80,7 @@ Weekly PDF report generation for analytics.
 
 Two-factor authentication (2FA) for admin and agent accounts.
 
-###🤝 Contributing
+### 🤝 Contributing
 Contributions make the open-source community an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
 Fork the Project.
