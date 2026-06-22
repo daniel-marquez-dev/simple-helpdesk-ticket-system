@@ -48,7 +48,8 @@ JWT_SECRET=your_secret_key
 Run the following command to install all the required packages:
 
 ```Bash
-npm install```
+npm install
+```
 
 ### 4. Run Migrations / Initialize Database
 Set up your database tables by running the migration scripts:
@@ -56,6 +57,7 @@ Set up your database tables by running the migration scripts:
 ```Bash
 npm run migrate
 ```
+
 ### 5. Start the Application
 To launch the server in development mode:
 ```npm run dev```
