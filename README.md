@@ -1,23 +1,27 @@
-Markdown
 # Simple Helpdesk Ticket System
 
 Welcome to the **Simple Helpdesk Ticket System**! This is a web application designed to simplify the management, tracking, and resolution of technical support requests (tickets) within a corporate or customer service environment. The system centralizes communication, assigns priorities, and optimizes the support team's workflow.
 
+---
+
 ## 🚀 Key Features
 
-- **Ticket Management:** Create, edit, filter, and track support requests.
+- **Ticket Management:** Create, edit, filter, and track support requests seamlessly.
 - **Status Workflow:** Clear transitions from ticket opening (`Open`), to work in progress (`In Progress`), to final resolution (`Resolved` / `Closed`).
 - **Priority Control:** Categorize tickets by urgency levels (Low, Medium, High, Critical).
 - **Dashboard:** Quick visual metrics on current support status and overall workload.
 - **Roles & Permissions:** Distinction between requesting users (customers/employees) and support agents handling the tasks.
 
+---
+
 ## 🛠️ Tech Stack
 
-This project was developed using the following technologies:
+- **Frontend:** HTML5, CSS3, JavaScript, React.js
+- **Backend:** Node.js, Express.js
+- **Database:** PostgreSQL / MySQL
+- **Authentication:** JSON Web Tokens (JWT)
 
-- **Frontend:** HTML5, CSS3 / Styling Framework (e.g., Bootstrap, Tailwind), JavaScript (or framework like React, Vue, Angular).
-- **Backend:** [Specify backend framework, e.g., Node.js (Express), Python (Django/Flask), PHP (Laravel), Java (Spring Boot)].
-- **Database:** [Specify DB, e.g., PostgreSQL, MySQL, MongoDB] for user and ticket data persistence.
+---
 
 ## 📦 Installation and Setup
 
@@ -27,37 +31,34 @@ Follow these steps to set up the local development environment:
 ```bash
 git clone [https://github.com/daniel-marquez-dev/simple-helpdesk-ticket-system.git](https://github.com/daniel-marquez-dev/simple-helpdesk-ticket-system.git)
 cd simple-helpdesk-ticket-system
-2. Configure Environment Variables
-Create a .env file in the root directory (or wherever appropriate based on your architecture) following the .env.example structure, and define your credentials:
 
-Fragmento de código
+2. Configure Environment Variables
+Create a .env file in the root directory following the .env.example structure, and define your credentials:
+```
 PORT=3000
 DB_HOST=localhost
 DB_USER=your_user
 DB_PASSWORD=your_password
 DB_NAME=helpdesk_db
+JWT_SECRET=your_secret_key
+```
+
 3. Install Dependencies
-Depending on your backend/frontend technology, run:
+Run the following command to install all the required packages:
 
-If using Node.js / npm:
+```Bash
+npm install```
 
-Bash
-npm install
-If using Python / pip:
-
-Bash
-pip install -r requirements.txt
 4. Run Migrations / Initialize Database
-(Modify according to your actual framework/database setup)
+Set up your database tables by running the migration scripts:
 
-Bash
-npm run migrate # Or the equivalent command to build your database tables
+```Bash
+npm run migrate
+```
 5. Start the Application
 To launch the server in development mode:
-
-Bash
-npm run dev # Or npm start / python main.py
-Open your browser and navigate to http://localhost:3000 (or your configured port).
+```npm run dev```
+Open your browser and navigate to http://localhost:8000/register
 
 💡 System Usage
 Sign Up & Log In: Create an account as a regular user to report issues or log in with agent credentials to manage them.
@@ -87,14 +88,3 @@ Commit your Changes (git commit -m 'Add some AmazingFeature').
 Push to the Branch (git push origin feature/AmazingFeature).
 
 Open a Pull Request.
-
-📄 License
-This project is licensed under the MIT License. See the LICENSE file for more details.
-
-✒️ Developed by Daniel Márquez
-
-
-***
-
-### 📝 Tailoring Notes:
-Just remember to double-check the **Tech Stack** and **Installation** sections to match the exact languages (e.g., Python, Node.js, PHP) or database engines you actually used in your source code!
